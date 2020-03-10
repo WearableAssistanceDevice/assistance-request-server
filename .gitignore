@@ -54,3 +54,4 @@ dkms.conf
 
 # SEGGER Embedded Studio files
 Output
+*.emSession

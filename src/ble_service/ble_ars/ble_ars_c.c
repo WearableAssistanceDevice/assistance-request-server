@@ -47,6 +47,7 @@
 #define NRF_LOG_MODULE_NAME ble_ars_c
 
 #include "nrf_log.h"
+#include "nrf_log_ctrl.h"
 NRF_LOG_MODULE_REGISTER();
 
 #define WRITE_MESSAGE_LENGTH   BLE_CCCD_VALUE_LEN    /**< Length of the write message for CCCD. */
