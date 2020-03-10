@@ -1,5 +1,5 @@
 #include "ble_assist_service.h"
-#include "ble_service/ble_ars/ble_ars_c.h"
+#include "ble_service/ble_ars_c/ble_ars_c.h"
 
 #include "config.h"
 
