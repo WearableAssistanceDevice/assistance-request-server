@@ -11,6 +11,10 @@
 #include "nrf_ble_qwr.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /**@brief BLE advertisement event handler type
  *
@@ -85,3 +89,8 @@ void advertising_start(bool erase_bonds);
  * @param[in] event  BSP event.
  */
 void ble_bsp_evt_handler(bsp_event_t event);
+
+
+#ifdef __cplusplus
+}
+#endif
