@@ -37,9 +37,10 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+#include "ble_ars_c.h"
+
 #include "sdk_common.h"
 
-#include "ble_ars_c.h"
 #include "ble_db_discovery.h"
 #include "ble_types.h"
 #include "ble_gattc.h"
@@ -252,7 +253,7 @@ static uint32_t cccd_configure(ble_ars_c_t* p_ble_ars_c, bool enable)
     cccd_req.error_handler.p_ctx         = p_ble_ars_c;
     cccd_req.params.gattc_write.handle   = p_ble_ars_c->peer_ars_db.assist_req_cccd_handle;
     cccd_req.params.gattc_write.len      = WRITE_MESSAGE_LENGTH;
-    cccd_req.params.gattc_write.offset    = 0;
+    cccd_req.params.gattc_write.offset   = 0;
     cccd_req.params.gattc_write.p_value  = cccd;
     cccd_req.params.gattc_write.write_op = BLE_GATT_OP_WRITE_REQ;
 
@@ -274,7 +275,32 @@ uint32_t ble_ars_c_assist_req_notif_enable(ble_ars_c_t* p_ble_ars_c)
 }
 
 
-uint32_t ble_ars_assist_req_send(ble_ars_c_t* p_ble_ars_c, uint8_t status)
+uint32_t ble_ars_c_assist_req_get(ble_ars_c_t* p_ble_ars_c)
+{
+    VERIFY_PARAM_NOT_NULL(p_ble_ars_c);
+
+    if (p_ble_ars_c->conn_handle == BLE_CONN_HANDLE_INVALID)
+    {
+        return NRF_ERROR_INVALID_STATE;
+    }
+
+    NRF_LOG_DEBUG("Reading Assistance Request status");
+
+    nrf_ble_gq_req_t read_req;
+
+    memset(&read_req, 0, sizeof(nrf_ble_gq_req_t));
+
+    read_req.type                        = NRF_BLE_GQ_REQ_GATTC_READ;
+    read_req.error_handler.cb            = gatt_error_handler;
+    read_req.error_handler.p_ctx         = p_ble_ars_c;
+    read_req.params.gattc_read.handle    = p_ble_ars_c->peer_ars_db.assist_req_handle;
+    read_req.params.gattc_read.offset    = 0;
+
+    return nrf_ble_gq_item_add(p_ble_ars_c->p_gatt_queue, &read_req, p_ble_ars_c->conn_handle);
+}
+
+
+uint32_t ble_ars_c_assist_req_send(ble_ars_c_t* p_ble_ars_c, uint8_t status)
 {
     VERIFY_PARAM_NOT_NULL(p_ble_ars_c);
 
@@ -295,7 +321,7 @@ uint32_t ble_ars_assist_req_send(ble_ars_c_t* p_ble_ars_c, uint8_t status)
     write_req.params.gattc_write.handle   = p_ble_ars_c->peer_ars_db.assist_req_handle;
     write_req.params.gattc_write.len      = sizeof(status);
     write_req.params.gattc_write.p_value  = &status;
-    write_req.params.gattc_write.offset    = 0;
+    write_req.params.gattc_write.offset   = 0;
     write_req.params.gattc_write.write_op = BLE_GATT_OP_WRITE_CMD; 
 
     return nrf_ble_gq_item_add(p_ble_ars_c->p_gatt_queue, &write_req, p_ble_ars_c->conn_handle);

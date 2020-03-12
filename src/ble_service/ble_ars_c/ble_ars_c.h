@@ -97,7 +97,7 @@ NRF_SDH_BLE_OBSERVERS(_name ## _obs,                       \
 
 
 #define ARS_UUID_BASE {0xD2, 0x5F, 0xC5, 0xB3, 0xD6, 0xBA, 0xCF, 0x84, \
-                      0x1E, 0x45, 0x13, 0x14, 0x6A, 0x66, 0xD7, 0xBA}
+                       0x1E, 0x45, 0x13, 0x14, 0x6A, 0x66, 0xD7, 0xBA}
 
 #define ARS_UUID_SERVICE         0x1000
 #define ARS_UUID_ASSIST_REQ_CHAR 0x1001
@@ -251,11 +251,22 @@ uint32_t ble_ars_c_handles_assign(ble_ars_c_t*    p_ble_ars_c,
  * @param[in] p_ble_ars_c Pointer to the Assistance Request client structure.
  * @param[in] status      Assistance Request status to send.
  *
- * @retval NRF_SUCCESS If the status was sent successfully.
- * @retval err_code    Otherwise, this API propagates the error code returned by function
- *                     @ref nrf_ble_gq_conn_handle_register.
+ * @retval NRF_ERROR_INVALID_STATE  If the connection handle is invalid.
+ * @retval err_code                 Otherwise, this API propagates the error code returned by function
+ *                                  @ref nrf_ble_gq_item_add.
  */
-uint32_t ble_ars_assist_req_send(ble_ars_c_t* p_ble_ars_c, uint8_t status);
+uint32_t ble_ars_c_assist_req_send(ble_ars_c_t* p_ble_ars_c, uint8_t status);
+
+
+/**@brief Function for reading the Assistance Request status from the connected server.
+ *
+ * @param[in] p_ble_ars_c Pointer to the Assistance Request client structure.
+ *
+ * @retval NRF_ERROR_INVALID_STATE  If the connection handle is invalid.
+ * @retval err_code                 Otherwise, this API propagates the error code returned by function
+ *                                  @ref nrf_ble_gq_item_add.
+ */
+uint32_t ble_ars_c_assist_req_get(ble_ars_c_t* p_ble_ars_c);
 
 
 #ifdef __cplusplus
