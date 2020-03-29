@@ -109,9 +109,6 @@ static void ars_c_evt_handler(ble_ars_c_t* p_ars_c, ble_ars_c_evt_t* p_ars_c_evt
                                                 &p_ars_c_evt->params.peer_db);
             NRF_LOG_INFO("Assistance Request service discovered on conn_handle 0x%x.", p_ars_c_evt->conn_handle);
 
-            err_code = app_button_enable();
-            APP_ERROR_CHECK(err_code);
-
             // Assistance Request service discovered. Enable notification of assistance request.
             //err_code = ble_ars_c_assist_req_notif_enable(p_ars_c);
             //APP_ERROR_CHECK(err_code);
