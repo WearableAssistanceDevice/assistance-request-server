@@ -5,7 +5,6 @@
 #include "bsp.h"
 
 
-
 // BLE Services Config
 #define DEVICE_NAME                     "Assistance_Server"                     /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -33,7 +32,9 @@
 #define SEC_PARAM_MIN_KEY_SIZE          7                                       /**< Minimum encryption key size. */
 #define SEC_PARAM_MAX_KEY_SIZE          16                                      /**< Maximum encryption key size. */
 
+#define CONNECTED_LED                   BSP_BOARD_LED_3                         /**< The LED that indicates an active connection */
+
 
 // BLE Assist Service Config
-#define ASSISTANCE_REQUEST_ACK_BUTTON   BSP_EVENT_KEY_3                         /**< The button event fired when the assistance request button is pressed */
-#define ASSISTANCE_REQUEST_LED          BSP_BOARD_LED_3                         /**< The LED that indicates a request for assistance was made */
+#define ASSISTANCE_REQUEST_ACK_BUTTON   BSP_EVENT_KEY_0                         /**< The button event fired when the assistance request acknowledgement button is pressed */
+#define ASSISTANCE_REQUEST_LED          BSP_BOARD_LED_0                         /**< The LED that indicates a request for assistance was made */

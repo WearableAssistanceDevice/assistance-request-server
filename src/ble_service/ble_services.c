@@ -38,7 +38,7 @@ static struct {
 } ble_services_config;
 
 
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
+static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID; /**< Handle of the current connection. */
 
 
 /**@brief Function for handling BLE-related BSP events.
@@ -274,16 +274,12 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
     {
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Disconnected.");
-            // LED indication will be changed when advertising starts.
             break;
 
         case BLE_GAP_EVT_CONNECTED:
         {
             NRF_LOG_INFO("Connected.");
             m_conn_handle = p_gap_evt->conn_handle;
-
-            err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
-            APP_ERROR_CHECK(err_code);
 
             err_code = nrf_ble_qwr_conn_handle_assign(ble_services_config.p_ble_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);

@@ -107,12 +107,13 @@ static void ars_c_evt_handler(ble_ars_c_t* p_ars_c, ble_ars_c_evt_t* p_ars_c_evt
             err_code = ble_ars_c_handles_assign(&m_ble_ars_c,
                                                 p_ars_c_evt->conn_handle,
                                                 &p_ars_c_evt->params.peer_db);
-            NRF_LOG_INFO("Assistance Request service discovered on conn_handle 0x%x.", p_ars_c_evt->conn_handle);
+            NRF_LOG_INFO("Assistance request service discovered on conn_handle 0x%x.", p_ars_c_evt->conn_handle);
 
             // Assistance Request service discovered. Enable notification of assistance request.
             //err_code = ble_ars_c_assist_req_notif_enable(p_ars_c);
             //APP_ERROR_CHECK(err_code);
 
+            NRF_LOG_INFO("Reading assistance request state...");
             err_code = ble_ars_c_assist_req_get(&m_ble_ars_c);
             APP_ERROR_CHECK(err_code);
         } break; // BLE_ARS_C_EVT_DISCOVERY_COMPLETE
@@ -181,32 +182,40 @@ void ble_adv_evt_handler(ble_adv_evt_t ble_adv_evt) {
  * @param[in]   p_context   Unused.
  */
 void ble_evt_handler(const ble_evt_t* p_ble_evt, void* p_context) {
-    ret_code_t err_code;
+    ret_code_t err_code = NRF_SUCCESS;
     uint8_t assist_requested;
 
     const ble_gap_evt_t* p_gap_evt = &p_ble_evt->evt.gap_evt;
 
-    switch (p_ble_evt->header.evt_id) {
+    switch (p_ble_evt->header.evt_id)
+    {
         case BLE_GAP_EVT_CONNECTED: {
+            bsp_board_led_on(CONNECTED_LED);
             err_code = ble_ars_c_handles_assign(&m_ble_ars_c, p_gap_evt->conn_handle, NULL);
             APP_ERROR_CHECK(err_code);
+        } break;
+
+        case BLE_GAP_EVT_DISCONNECTED: {
+            bsp_board_led_off(CONNECTED_LED);
         } break;
 
         case BLE_GATTC_EVT_READ_RSP: {
             assist_requested = p_ble_evt->evt.gattc_evt.params.read_rsp.data[0];
 
             if (assist_requested) {
-                NRF_LOG_INFO("ARS assistance request obtained");
+                NRF_LOG_INFO("Assistance request received");
                 bsp_board_led_on(ASSISTANCE_REQUEST_LED);
 
+                NRF_LOG_INFO("Acknowledging assistance request...");
                 err_code = ble_ars_c_assist_req_send(&m_ble_ars_c, false);
                 if (err_code != NRF_SUCCESS &&
                     err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
                     err_code != NRF_ERROR_INVALID_STATE) {
                     APP_ERROR_CHECK(err_code);
+                    NRF_LOG_INFO("Assistance request acknowledgement sent");
                 }
                 if (err_code == NRF_SUCCESS) {
-                    NRF_LOG_INFO("ARS acknowledge assistance request");
+                    NRF_LOG_INFO("Failed to send assistance request acknowledgement");
                 }
             }
             else {
@@ -290,7 +299,7 @@ int main(void)
     ble_services_init(&ble_init);
 
     // Start execution
-    NRF_LOG_INFO("Template example started.");
+    NRF_LOG_INFO("Assistance server started");
 
     advertising_start(erase_bonds);
 
