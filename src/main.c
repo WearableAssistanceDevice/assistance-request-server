@@ -208,13 +208,13 @@ void ble_evt_handler(const ble_evt_t* p_ble_evt, void* p_context) {
 
                 NRF_LOG_INFO("Acknowledging assistance request...");
                 err_code = ble_ars_c_assist_req_send(&m_ble_ars_c, false);
-                if (err_code != NRF_SUCCESS &&
+                if (err_code == NRF_SUCCESS &&
                     err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
                     err_code != NRF_ERROR_INVALID_STATE) {
                     APP_ERROR_CHECK(err_code);
                     NRF_LOG_INFO("Acknowledgement sent");
                 }
-                if (err_code == NRF_SUCCESS) {
+                if (err_code != NRF_SUCCESS) {
                     NRF_LOG_INFO("Failed to send acknowledgement");
                 }
             }
